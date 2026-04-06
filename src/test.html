@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MedOT CRM | Complete Industrial Workflow for OT Projects</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #0B5E42;
+            --primary-dark: #08452F;
+            --primary-light: #DCFCE7;
+            --secondary: #1E40AF;
+            --accent: #D97706;
+            --accent-light: #FEF3C7;
+            --danger: #DC2626;
+            --danger-light: #FEE2E2;
+            --gray-50: #F8FAFC;
+            --gray-100: #F1F5F9;
+            --gray-200: #E2E8F0;
+            --gray-600: #475569;
+            --gray-800: #1E293B;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            height: 100vh;
+            overflow: hidden;
+        }
+        .app { display: flex; height: 100%; }
+        
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0B2A22 0%, #041A14 100%);
+            color: #E6F7F2;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        .logo-area { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08);}
+        .logo-area h1 { font-size: 20px; font-weight: 700; background: linear-gradient(135deg,#FFF,#A7F0DD); -webkit-background-clip: text; background-clip: text; color: transparent;}
+        .logo-area p { font-size: 11px; opacity: 0.6; margin-top: 4px;}
+        .nav { flex:1; padding: 20px 12px; display: flex; flex-direction: column; gap: 4px;}
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            border-radius: 12px; cursor: pointer; transition: 0.2s; color: rgba(230,247,242,0.75);
+            font-weight: 500; font-size: 14px;
+        }
+        .nav-item i { width: 22px; }
+        .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.2);}
+        .badge-side { margin-left: auto; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 30px; font-size: 10px;}
+        
+        /* MAIN */
+        .main { flex:1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { background: white; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gray-200);}
+        .page-title { font-size: 24px; font-weight: 700; background: linear-gradient(135deg, #0F172A, #0B5E42); -webkit-background-clip: text; background-clip: text; color: transparent;}
+        .btn { padding: 8px 20px; border-radius: 40px; font-weight: 500; border: none; cursor: pointer; transition: 0.2s; display: inline-flex; gap: 8px; align-items: center; font-family: inherit;}
+        .btn-primary { background: var(--primary); color: white; box-shadow: var(--shadow-sm);}
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px);}
+        .btn-outline { background: white; border: 1px solid var(--gray-200); color: var(--gray-600);}
+        .btn-sm { padding: 5px 14px; font-size: 12px;}
+        .btn-danger { background: var(--danger-light); color: var(--danger); border: none;}
+        
+        .content-scroll { flex:1; overflow-y: auto; padding: 24px 28px; }
+        
+        /* Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; margin-bottom: 24px;}
+        .stat-card { background: white; border-radius: 20px; padding: 18px 20px; border: 1px solid var(--gray-200);}
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--primary); margin-top: 4px;}
+        
+        /* Workflow Timeline */
+        .workflow-timeline { display: flex; gap: 0; margin-bottom: 28px; overflow-x: auto; padding-bottom: 8px;}
+        .wf-step { flex: 1; min-width: 140px; background: white; border-radius: 16px; padding: 14px; text-align: center; border: 1px solid var(--gray-200); position: relative; margin-right: -1px;}
+        .wf-step.active { background: var(--primary-light); border-color: var(--primary);}
+        .wf-step.completed { background: #DCFCE7; border-color: #86EFAC;}
+        .wf-icon { font-size: 24px; margin-bottom: 8px;}
+        .wf-label { font-size: 11px; font-weight: 600; color: var(--gray-600);}
+        .wf-title { font-size: 13px; font-weight: 700; margin-top: 4px;}
+        
+        /* Pipeline Stages */
+        .pipeline-strip { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 28px;}
+        .pipe-card { background: white; border-radius: 20px; padding: 14px 20px; min-width: 140px; border: 1px solid var(--gray-200); cursor: pointer; transition: 0.2s;}
+        .pipe-card:hover { border-color: var(--primary);}
+        .pipe-count { font-size: 28px; font-weight: 800; color: var(--primary);}
+        
+        /* Table */
+        .table-wrapper { background: white; border-radius: 20px; border: 1px solid var(--gray-200); overflow-x: auto;}
+        table { width: 100%; border-collapse: collapse; min-width: 700px;}
+        th { text-align: left; padding: 14px 16px; font-size: 12px; font-weight: 600; color: var(--gray-600); border-bottom: 1px solid var(--gray-200); background: var(--gray-50);}
+        td { padding: 12px 16px; border-bottom: 1px solid var(--gray-100); font-size: 13px;}
+        .badge { display: inline-flex; padding: 4px 12px; border-radius: 40px; font-size: 11px; font-weight: 600;}
+        .badge-success { background: #DCFCE7; color: #166534;}
+        .badge-warning { background: #FEF3C7; color: #92400E;}
+        .badge-info { background: #E0F2FE; color: #075985;}
+        .badge-purple { background: #F3E8FF; color: #6B21A5;}
+        .badge-danger { background: #FEE2E2; color: #991B1B;}
+        
+        /* MODAL */
+        .modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000;}
+        .modal-overlay.open { display: flex;}
+        .modal-container { background: white; width: 90%; max-width: 1000px; max-height: 85vh; border-radius: 28px; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);}
+        .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; background: white;}
+        .modal-body { padding: 24px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;}
+        .form-group { display: flex; flex-direction: column; gap: 6px;}
+        .form-group.full { grid-column: span 2;}
+        input, select, textarea { padding: 10px 14px; border: 1px solid var(--gray-200); border-radius: 12px; font-size: 13px; font-family: inherit; background: var(--gray-50);}
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(11,94,66,0.1);}
+        
+        /* Approval Chain */
+        .approval-chain { display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap;}
+        .approval-card { flex:1; background: var(--gray-50); border-radius: 16px; padding: 16px; text-align: center; border: 1px solid var(--gray-200);}
+        .approval-card.approved { background: #DCFCE7; border-color: #86EFAC;}
+        .approval-card.pending { background: #FEF3C7; border-color: #FDE68A;}
+        
+        /* BOQ Summary */
+        .boq-summary { background: #F0FDF4; border-radius: 20px; padding: 20px; margin-top: 20px; border: 1px solid #BBF7D0;}
+        .total-box { display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 800; color: #065F46;}
+        
+        .page { display: none; }
+        .page.active-page { display: block; }
+        
+        /* Decision Branch Visual */
+        .decision-branch { background: linear-gradient(135deg, #FEF3C7, #FDE68A); border-radius: 16px; padding: 12px 20px; margin: 16px 0; display: flex; align-items: center; justify-content: space-between;}
+    </style>
+</head>
+<body>
+<div class="app">
+    <aside class="sidebar">
+        <div class="logo-area"><h1><i class="fas fa-microscope"></i> MedOT CRM</h1><p>Industrial OT Workflow</p></div>
+        <div class="nav">
+            <div class="nav-item active" data-page="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</div>
+            <div class="nav-item" data-page="enquiries"><i class="fas fa-inbox"></i> Enquiries <span class="badge-side" id="enqCount">0</span></div>
+            <div class="nav-item" data-page="quotations"><i class="fas fa-file-invoice"></i> Quotations</div>
+            <div class="nav-item" data-page="approvals"><i class="fas fa-check-circle"></i> Approvals <span class="badge-side" id="appCount">0</span></div>
+            <div class="nav-item" data-page="orders"><i class="fas fa-trophy"></i> Orders Won</div>
+            <div class="nav-item" data-page="register"><i class="fas fa-database"></i> Sales Register</div>
+        </div>
+        <div style="padding:20px; border-top:1px solid rgba(255,255,255,0.08);"><div style="display:flex; gap:12px;"><div style="width:36px;height:36px;background:#0B5E42;border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-user"></i></div><div><div>Vikram Shah</div><div style="font-size:11px;opacity:0.6;">Sales Director</div></div></div></div>
+    </aside>
+    <div class="main">
+        <div class="topbar"><div class="page-title" id="mainTitle">Dashboard</div><div><button class="btn btn-primary" id="newEnquiryBtn"><i class="fas fa-plus"></i> New Enquiry</button></div></div>
+        <div class="content-scroll">
+            <!-- Dashboard -->
+            <div id="page-dashboard" class="page active-page">
+                <div class="stats-grid" id="statsGrid"></div>
+                <div class="workflow-timeline" id="workflowSteps"></div>
+                <div class="pipeline-strip" id="pipelineStrip"></div>
+                <div class="table-wrapper"><table><thead><tr><th>Enquiry ID</th><th>Hospital</th><th>Source</th><th>Value</th><th>Stage</th><th>Action</th></tr></thead><tbody id="dashTable"></tbody></table></div>
+            </div>
+            <div id="page-enquiries" class="page"><div class="table-wrapper"><table><thead><tr><th>ID</th><th>Hospital</th><th>Contact/Source</th><th>OT Type</th><th>Drawings</th><th>Stage</th><th>Value</th><th></th></tr></thead><tbody id="enqTableBody"></tbody></table></div></div>
+            <div id="page-quotations" class="page"><div class="table-wrapper"><table><thead><tr><th>Enquiry</th><th>Hospital</th><th>BOQ Total</th><th>Engineer</th><th>Status</th><th>Action</th></tr></thead><tbody id="quotTableBody"></tbody></table></div></div>
+            <div id="page-approvals" class="page"><div class="approval-chain" id="approvalChainStatic"></div><div class="table-wrapper"><table><thead><tr><th>Enquiry</th><th>Hospital</th><th>Value</th><th>Technical</th><th>Commercial</th><th>Management</th><th></th></tr></thead><tbody id="approvalTableBody"></tbody></table></div></div>
+            <div id="page-orders" class="page"><div class="stats-grid" id="orderStatsMini"></div><div class="table-wrapper"><table><thead><tr><th>Enquiry</th><th>Hospital</th><th>Order Value</th><th>Won Date</th></tr></thead><tbody id="ordersTableBody"></tbody></table></div></div>
+            <div id="page-register" class="page"><div class="table-wrapper"><table><thead><tr><th>ID</th><th>Date</th><th>Hospital</th><th>Contact</th><th>Source</th><th>Stage</th><th>Value</th></tr></thead><tbody id="registerBody"></tbody></table></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- DETAIL MODAL - Complete Workflow Implementation -->
+<div id="detailModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3 id="modalTitle">Enquiry / Quotation Workflow</h3><button onclick="closeModal('detailModal')" style="background:none; border:none; font-size:24px;">&times;</button></div><div class="modal-body" id="detailModalBody"></div><div class="modal-footer" style="padding:20px 24px; border-top:1px solid var(--gray-200); display: flex; justify-content: flex-end; gap:12px;"><button class="btn btn-outline" onclick="closeModal('detailModal')">Close</button><button class="btn btn-primary" id="saveWorkflowBtn" onclick="saveWorkflowUpdate()">Update & Save</button></div></div></div>
+
+<script>
+    // ==================== DATA ====================
+    let enquiries = [
+        { id:"ENQ-2401", hospital:"Apollo Delhi", city:"Delhi", contact:"Dr. Ramesh", source:"Doctor", otType:"Modular OT", otCount:2, drawings:"yes", stage:"quotation", value:4850000, date:"2025-03-10", engineer:"Ajay Nair", 
+          boq:{ equip:2850000, civil:650000, electrical:550000, install:450000, amc:200000, transport:150000, contingency:100000 }, approvals:{ tech:true, comm:false, mgmt:false } },
+        { id:"ENQ-2402", hospital:"Fortis Mumbai", city:"Mumbai", contact:"Ar. Priya", source:"Architect", otType:"Laminar Flow", otCount:1, drawings:"no", stage:"awaiting", value:0, date:"2025-03-15", engineer:"Neha Gupta", boq:null, approvals:{ tech:false, comm:false, mgmt:false } },
+        { id:"ENQ-2403", hospital:"Manipal Bangalore", city:"Bangalore", contact:"Dr. Suresh", source:"Doctor", otType:"OT Complex", otCount:3, drawings:"yes", stage:"approvals", value:9200000, date:"2025-03-05", engineer:"Ravi Menon", 
+          boq:{ equip:6200000, civil:1200000, electrical:800000, install:600000, amc:250000, transport:100000, contingency:50000 }, approvals:{ tech:true, comm:false, mgmt:false } },
+        { id:"ENQ-2404", hospital:"Kokilaben Mumbai", city:"Mumbai", contact:"Dr. Anjali", source:"Doctor", otType:"Modular OT", otCount:2, drawings:"yes", stage:"won", value:5600000, date:"2025-02-28", engineer:"Priya Das", boq:null, approvals:{ tech:true, comm:true, mgmt:true } },
+        { id:"ENQ-2405", hospital:"AIIMS Nagpur", city:"Nagpur", contact:"Admin Dept", source:"Admin", otType:"ICU", otCount:1, drawings:"no", stage:"enquiry", value:0, date:"2025-03-18", engineer:"Ajay Nair", boq:null, approvals:{ tech:false, comm:false, mgmt:false } },
+    ];
+
+    const stageLabels = { enquiry:"Enquiry Phase", awaiting:"Awaiting Drawings", quotation:"Quotation Prep", approvals:"Approvals", sent:"Sent to Client", won:"Order Won", "follow-up":"Follow-up/Revise" };
+    const badgeClass = { enquiry:"badge-info", awaiting:"badge-warning", quotation:"badge-purple", approvals:"badge-warning", sent:"badge-info", won:"badge-success", "follow-up":"badge-danger" };
+    
+    function formatINR(amt) { return amt ? "₹"+Number(amt).toLocaleString('en-IN') : "₹0"; }
+    function formatDate(d) { return d ? new Date(d).toLocaleDateString('en-IN') : "-"; }
+    let currentEnquiryId = null;
+
+    function renderAll() {
+        renderDashboard(); renderEnquiries(); renderQuotations(); renderApprovals(); renderOrders(); renderRegister();
+        document.getElementById('enqCount').innerText = enquiries.filter(e=>e.stage==='enquiry'||e.stage==='awaiting').length;
+        document.getElementById('appCount').innerText = enquiries.filter(e=>e.stage==='approvals').length;
+    }
+
+    function renderDashboard() {
+        const totalVal = enquiries.reduce((s,e)=>s+(e.value||0),0);
+        document.getElementById('statsGrid').innerHTML = `
+            <div class="stat-card"><div class="stat-value">${enquiries.length}</div><div>Total Enquiries</div></div>
+            <div class="stat-card"><div class="stat-value">${enquiries.filter(e=>e.stage==='quotation').length}</div><div>In Quotation</div></div>
+            <div class="stat-card"><div class="stat-value">${enquiries.filter(e=>e.stage==='approvals').length}</div><div>Pending Approvals</div></div>
+            <div class="stat-card"><div class="stat-value">${formatINR(totalVal)}</div><div>Pipeline Value</div></div>`;
+        
+        const workflowStages = [{icon:"📞",title:"Enquiry Received"},{icon:"📐",title:"Drawings"},{icon:"⚙️",title:"BOD + Calc"},{icon:"📦",title:"BOQ Ready"},{icon:"✅",title:"Approvals"},{icon:"📨",title:"Sent"},{icon:"🏆",title:"Won"}];
+        document.getElementById('workflowSteps').innerHTML = workflowStages.map(s => `<div class="wf-step"><div class="wf-icon">${s.icon}</div><div class="wf-label">Step</div><div class="wf-title">${s.title}</div></div>`).join('');
+        
+        const stages = ['enquiry','awaiting','quotation','approvals','won'];
+        document.getElementById('pipelineStrip').innerHTML = stages.map(s => `<div class="pipe-card" onclick="filterByStage('${s}')"><div class="pipe-count">${enquiries.filter(e=>e.stage===s).length}</div><div>${stageLabels[s]}</div></div>`).join('');
+        document.getElementById('dashTable').innerHTML = enquiries.slice(0,5).map(e => `<tr><td><strong>${e.id}</strong></td><td>${e.hospital}</td><td>${e.source}</td><td>${formatINR(e.value)}</td><td><span class="badge ${badgeClass[e.stage]}">${stageLabels[e.stage]}</span></td><td><button class="btn btn-sm btn-outline" onclick="openDetailModal('${e.id}')">View</button></td></tr>`).join('');
+    }
+
+    function renderEnquiries() { 
+        document.getElementById('enqTableBody').innerHTML = enquiries.map(e => `<tr><td>${e.id}</td><td>${e.hospital}<br><small>${e.city}</small></td><td>${e.contact}<br><small>${e.source}</small></td><td>${e.otType}</td><td>${e.drawings==='yes'?'✓ Received':'⏳ Awaiting'}</td><td><span class="badge ${badgeClass[e.stage]}">${stageLabels[e.stage]}</span></td><td>${formatINR(e.value)}</td><td><button class="btn btn-sm btn-outline" onclick="openDetailModal('${e.id}')">Open</button></td></tr>`).join('');
+    }
+
+    function renderQuotations() {
+        const qData = enquiries.filter(e=>['quotation','approvals','sent','won'].includes(e.stage));
+        document.getElementById('quotTableBody').innerHTML = qData.map(e => `<tr><td>${e.id}</td><td>${e.hospital}</td><td>${formatINR(e.value)}</td><td>${e.engineer}</td><td><span class="badge ${badgeClass[e.stage]}">${stageLabels[e.stage]}</span></td><td><button class="btn btn-sm btn-primary" onclick="openDetailModal('${e.id}')">BOQ & Workflow</button></td></tr>`).join('');
+    }
+
+    function renderApprovals() {
+        const aData = enquiries.filter(e=>e.stage==='approvals');
+        document.getElementById('approvalChainStatic').innerHTML = `<div class="approval-card approved"><i class="fas fa-check"></i> Technical: Rajan ✓</div><div class="approval-card pending"><i class="fas fa-clock"></i> Commercial: Pending</div><div class="approval-card"><i class="fas fa-hourglass"></i> Management: Awaiting</div>`;
+        document.getElementById('approvalTableBody').innerHTML = aData.map(e => `<tr><td>${e.id}</td><td>${e.hospital}</td><td>${formatINR(e.value)}</td><td><span class="badge badge-success">${e.approvals?.tech ? 'Approved' : 'Pending'}</span></td><td><span class="badge badge-warning">${e.approvals?.comm ? 'Approved' : 'Pending'}</span></td><td><span class="badge badge-info">${e.approvals?.mgmt ? 'Approved' : 'Awaiting'}</span></td><td><button class="btn btn-sm btn-primary" onclick="openDetailModal('${e.id}')">Review</button></td></tr>`).join('');
+    }
+
+    function renderOrders() {
+        const won = enquiries.filter(e=>e.stage==='won');
+        const totalWon = won.reduce((s,w)=>s+w.value,0);
+        document.getElementById('orderStatsMini').innerHTML = `<div class="stat-card"><div class="stat-value">${won.length}</div><div>Orders Won</div></div><div class="stat-card"><div class="stat-value">${formatINR(totalWon)}</div><div>Total Revenue</div></div>`;
+        document.getElementById('ordersTableBody').innerHTML = won.map(e => `<tr><td>${e.id}</td><td>${e.hospital}</td><td>${formatINR(e.value)}</td><td>${formatDate(e.date)}</td></tr>`).join('');
+    }
+
+    function renderRegister() {
+        document.getElementById('registerBody').innerHTML = enquiries.map((e,i)=>`<tr><td>${e.id}</td><td>${formatDate(e.date)}</td><td>${e.hospital}</td><td>${e.contact}</td><td>${e.source}</td><td><span class="badge ${badgeClass[e.stage]}">${stageLabels[e.stage]}</span></td><td>${formatINR(e.value)}</td></tr>`).join('');
+    }
+
+    // ==================== COMPLETE WORKFLOW MODAL ====================
+    function openDetailModal(id) {
+        const e = enquiries.find(x=>x.id===id);
+        if(!e) return;
+        currentEnquiryId = id;
+        const boq = e.boq || { equip:0, civil:0, electrical:0, install:0, amc:0, transport:0, contingency:0 };
+        const total = Object.values(boq).reduce((a,b)=>a+(b||0),0);
+        const appr = e.approvals || { tech:false, comm:false, mgmt:false };
+        
+        document.getElementById('modalTitle').innerHTML = `🏥 ${e.id} · ${e.hospital} · Complete Workflow`;
+        document.getElementById('detailModalBody').innerHTML = `
+            <div class="form-grid">
+                <div class="form-group"><label>Hospital</label><input id="modalHospital" value="${e.hospital}" disabled></div>
+                <div class="form-group"><label>Source / Contact</label><input value="${e.source} · ${e.contact}" disabled></div>
+                <div class="form-group"><label>OT Type & Count</label><input value="${e.otType} (${e.otCount} OTs)" disabled></div>
+                <div class="form-group"><label>Engineer</label><input value="${e.engineer}" disabled></div>
+                <div class="form-group full"><label>📌 Current Stage (Workflow)</label><select id="modalStageSelect">${Object.entries(stageLabels).map(([val,label])=>`<option value="${val}" ${e.stage===val?'selected':''}>${label}</option>`).join('')}</select></div>
+            </div>
+            
+            <!-- Drawing Decision -->
+            <div class="decision-branch"><i class="fas fa-drafting-compass"></i> <strong>Drawing Received?</strong> 
+                <select id="drawingsSelect" style="width:auto; background:white;"><option value="yes" ${e.drawings==='yes'?'selected':''}>✅ Yes</option><option value="no" ${e.drawings==='no'?'selected':''}>⏳ No (Awaiting)</option></select>
+            </div>
+            
+            <!-- 7-Annexure BOQ Section -->
+            <div style="background:#F9FAFB; border-radius:20px; padding:20px; margin:16px 0;">
+                <h4 style="margin-bottom:16px;"><i class="fas fa-calculator"></i> 📊 7-Annexure BOQ (₹ INR)</h4>
+                <div class="form-grid">
+                    <div class="form-group"><label>1. Equipment</label><input type="number" id="boqEquip" value="${boq.equip}" class="boq-input"></div>
+                    <div class="form-group"><label>2. Civil / Infra</label><input type="number" id="boqCivil" value="${boq.civil}" class="boq-input"></div>
+                    <div class="form-group"><label>3. Electrical</label><input type="number" id="boqElec" value="${boq.electrical}" class="boq-input"></div>
+                    <div class="form-group"><label>4. Installation</label><input type="number" id="boqInstall" value="${boq.install}" class="boq-input"></div>
+                    <div class="form-group"><label>5. AMC / Warranty</label><input type="number" id="boqAmc" value="${boq.amc}" class="boq-input"></div>
+                    <div class="form-group"><label>6. Transport</label><input type="number" id="boqTransport" value="${boq.transport}" class="boq-input"></div>
+                    <div class="form-group"><label>7. Contingency</label><input type="number" id="boqCont" value="${boq.contingency}" class="boq-input"></div>
+                </div>
+                <div class="boq-summary"><div class="total-box"><span>💰 TOTAL QUOTATION VALUE</span><span id="dynamicTotal">${formatINR(total)}</span></div></div>
+            </div>
+            
+            <!-- Approval Chain (Multi-level) -->
+            <h4><i class="fas fa-user-shield"></i> Internal Approvals</h4>
+            <div class="approval-chain">
+                <div class="approval-card ${appr.tech ? 'approved' : ''}" id="techCard"><i class="fas fa-microchip"></i> Technical<br><small>Rajan Mehta</small><br>${appr.tech ? '✓ Approved' : '⏳ Pending'}</div>
+                <div class="approval-card ${appr.comm ? 'approved' : ''}" id="commCard"><i class="fas fa-chart-line"></i> Commercial<br><small>Sunita Iyer</small><br>${appr.comm ? '✓ Approved' : '⏳ Pending'}</div>
+                <div class="approval-card ${appr.mgmt ? 'approved' : ''}" id="mgmtCard"><i class="fas fa-crown"></i> Management<br><small>Vikram Shah</small><br>${appr.mgmt ? '✓ Approved' : '⏳ Pending'}</div>
+            </div>
+            <div class="flex" style="display:flex; gap:8px; margin-bottom:20px;">
+                <button type="button" class="btn btn-sm btn-outline" onclick="toggleApproval('tech')">✔ Approve Technical</button>
+                <button type="button" class="btn btn-sm btn-outline" onclick="toggleApproval('comm')">💰 Approve Commercial</button>
+                <button type="button" class="btn btn-sm btn-outline" onclick="toggleApproval('mgmt')">👑 Approve Management</button>
+            </div>
+            
+            <div class="timeline" style="border-left:2px solid var(--gray-200); padding-left:20px; margin-top:16px;">
+                <div style="margin-bottom:12px;"><strong>📅 Workflow Timeline</strong></div>
+                <div>✅ Enquiry logged: ${formatDate(e.date)} from ${e.source}</div>
+                <div>📐 Drawings: ${e.drawings==='yes' ? 'Received' : 'Awaiting'}</div>
+                <div>📄 Quotation Status: ${e.value>0 ? formatINR(e.value) : 'Not calculated'}</div>
+                ${e.stage==='won' ? '<div>🏆 Order Won & Closed</div>' : ''}
+            </div>
+        `;
+        
+        window.tempApprovals = { tech: appr.tech, comm: appr.comm, mgmt: appr.mgmt };
+        document.querySelectorAll('.boq-input').forEach(inp => inp.addEventListener('input', updateDynamicTotal));
+        updateDynamicTotal();
+        openModal('detailModal');
+    }
+    
+    function updateDynamicTotal() {
+        const equip = parseFloat(document.getElementById('boqEquip')?.value)||0;
+        const civil = parseFloat(document.getElementById('boqCivil')?.value)||0;
+        const elec = parseFloat(document.getElementById('boqElec')?.value)||0;
+        const install = parseFloat(document.getElementById('boqInstall')?.value)||0;
+        const amc = parseFloat(document.getElementById('boqAmc')?.value)||0;
+        const trans = parseFloat(document.getElementById('boqTransport')?.value)||0;
+        const cont = parseFloat(document.getElementById('boqCont')?.value)||0;
+        const total = equip+civil+elec+install+amc+trans+cont;
+        document.getElementById('dynamicTotal').innerHTML = formatINR(total);
+    }
+    
+    function toggleApproval(type) {
+        if(!window.tempApprovals) window.tempApprovals = { tech:false, comm:false, mgmt:false };
+        window.tempApprovals[type] = true;
+        const card = document.getElementById(`${type}Card`);
+        if(card) { card.classList.add('approved'); card.innerHTML = card.innerHTML.replace('⏳ Pending', '✓ Approved'); }
+    }
+    
+    function saveWorkflowUpdate() {
+        if(!currentEnquiryId) return;
+        const idx = enquiries.findIndex(x=>x.id===currentEnquiryId);
+        if(idx===-1) return;
+        const newStage = document.getElementById('modalStageSelect').value;
+        const drawingsVal = document.getElementById('drawingsSelect').value;
+        const equip = parseFloat(document.getElementById('boqEquip')?.value)||0;
+        const civil = parseFloat(document.getElementById('boqCivil')?.value)||0;
+        const elec = parseFloat(document.getElementById('boqElec')?.value)||0;
+        const install = parseFloat(document.getElementById('boqInstall')?.value)||0;
+        const amc = parseFloat(document.getElementById('boqAmc')?.value)||0;
+        const trans = parseFloat(document.getElementById('boqTransport')?.value)||0;
+        const cont = parseFloat(document.getElementById('boqCont')?.value)||0;
+        const totalValue = equip+civil+elec+install+amc+trans+cont;
+        
+        enquiries[idx].drawings = drawingsVal;
+        enquiries[idx].stage = newStage;
+        enquiries[idx].value = totalValue;
+        enquiries[idx].boq = { equip, civil, electrical:elec, install, amc, transport:trans, contingency:cont };
+        enquiries[idx].approvals = window.tempApprovals || { tech:false, comm:false, mgmt:false };
+        
+        // Auto-advance logic: if drawings received and stage is awaiting -> move to quotation
+        if(drawingsVal === 'yes' && enquiries[idx].stage === 'awaiting') enquiries[idx].stage = 'quotation';
+        // if all approvals done and stage is approvals -> move to sent
+        const app = enquiries[idx].approvals;
+        if(app.tech && app.comm && app.mgmt && enquiries[idx].stage === 'approvals') enquiries[idx].stage = 'sent';
+        
+        closeModal('detailModal');
+        renderAll();
+        alert(`Workflow updated! ${enquiries[idx].id} → ${stageLabels[enquiries[idx].stage]} | Value: ${formatINR(totalValue)}`);
+    }
+    
+    function filterByStage(stage) {
+        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
+        document.getElementById('page-enquiries').classList.add('active-page');
+        document.getElementById('mainTitle').innerText = 'Enquiries';
+        const filtered = enquiries.filter(e=>e.stage===stage);
+        document.getElementById('enqTableBody').innerHTML = filtered.map(e => `<tr><td>${e.id}</td><td>${e.hospital}</td><td>${e.contact}</td><td>${e.otType}</td><td>${e.drawings==='yes'?'✓':'⏳'}</td><td><span class="badge ${badgeClass[e.stage]}">${stageLabels[e.stage]}</span></td><td>${formatINR(e.value)}</td><td><button class="btn btn-sm btn-outline" onclick="openDetailModal('${e.id}')">Open</button></td></tr>`).join('');
+    }
+    
+    function newEnquiry() {
+        const newId = "ENQ-" + new Date().getFullYear() + String(enquiries.length+101).slice(-3);
+        const today = new Date().toISOString().slice(0,10);
+        enquiries.unshift({
+            id: newId, hospital: "New Hospital", city: "City", contact: "Contact Person", source: "Doctor",
+            otType: "Modular OT", otCount: 1, drawings: "no", stage: "enquiry", value: 0, date: today,
+            engineer: "Unassigned", boq: null, approvals: { tech:false, comm:false, mgmt:false }
+        });
+        renderAll();
+        openDetailModal(newId);
+    }
+    
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const pageId = item.getAttribute('data-page');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(`page-${pageId}`).classList.add('active-page');
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+            document.getElementById('mainTitle').innerHTML = pageId.charAt(0).toUpperCase() + pageId.slice(1);
+            if(pageId==='dashboard') renderDashboard();
+            if(pageId==='enquiries') renderEnquiries();
+            if(pageId==='quotations') renderQuotations();
+            if(pageId==='approvals') renderApprovals();
+            if(pageId==='orders') renderOrders();
+            if(pageId==='register') renderRegister();
+        });
+    });
+    document.getElementById('newEnquiryBtn').addEventListener('click', newEnquiry);
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    window.openDetailModal = openDetailModal;
+    window.saveWorkflowUpdate = saveWorkflowUpdate;
+    window.toggleApproval = toggleApproval;
+    window.filterByStage = filterByStage;
+    window.closeModal = closeModal;
+    
+    renderAll();
+</script>
+</body>
+</html>
