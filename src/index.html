@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedOT Pro · OT Project CRM</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Lora:ital@0;1&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     APP SHELL
+══════════════════════════════════════════════════════════ -->
+<div class="app" id="app">
+
+  <!-- ─── SIDEBAR ─────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-mark">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <rect width="22" height="22" rx="6" fill="url(#bgrad)"/>
+          <path d="M11 4v14M4 11h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <defs><linearGradient id="bgrad" x1="0" y1="0" x2="22" y2="22">
+            <stop stop-color="#10B981"/><stop offset="1" stop-color="#065F46"/>
+          </linearGradient></defs>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">MedOT <span class="brand-pro">Pro</span></span>
+        <span class="brand-tagline">OT Project CRM</span>
+      </div>
+      <button class="sidebar-collapse-btn" id="collapseBtn" title="Collapse sidebar">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    </div>
+
+    <!-- Quick Stats Strip -->
+    <div class="sidebar-stats" id="sidebarStats">
+      <div class="ss-item" id="ss-active">
+        <span class="ss-val">—</span>
+        <span class="ss-lbl">Active</span>
+      </div>
+      <div class="ss-sep"></div>
+      <div class="ss-item" id="ss-won">
+        <span class="ss-val">—</span>
+        <span class="ss-lbl">Won</span>
+      </div>
+      <div class="ss-sep"></div>
+      <div class="ss-item" id="ss-pipeline">
+        <span class="ss-val">—</span>
+        <span class="ss-lbl">Pipeline</span>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <div class="nav-group-label">WORKSPACE</div>
+    <nav class="nav" id="mainNav">
+      <a class="nav-item active" data-page="dashboard" href="#">
+        <span class="nav-icon"><i class="fas fa-chart-treemap"></i></span>
+        <span class="nav-label">Dashboard</span>
+        <span class="nav-indicator"></span>
+      </a>
+      <a class="nav-item" data-page="enquiries" href="#">
+        <span class="nav-icon"><i class="fas fa-inbox"></i></span>
+        <span class="nav-label">Enquiries</span>
+        <span class="nav-badge" id="nb-enquiries">0</span>
+      </a>
+      <a class="nav-item" data-page="quotations" href="#">
+        <span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+        <span class="nav-label">Quotations</span>
+      </a>
+      <a class="nav-item" data-page="approvals" href="#">
+        <span class="nav-icon"><i class="fas fa-seal-check" style="font-family:'Font Awesome 6 Free'"></i><i class="fas fa-shield-check"></i></span>
+        <span class="nav-label">Approvals</span>
+        <span class="nav-badge urgent" id="nb-approvals">0</span>
+      </a>
+    </nav>
+
+    <div class="nav-group-label">RESULTS</div>
+    <nav class="nav">
+      <a class="nav-item" data-page="orders" href="#">
+        <span class="nav-icon"><i class="fas fa-trophy"></i></span>
+        <span class="nav-label">Orders Won</span>
+      </a>
+      <a class="nav-item" data-page="followup" href="#">
+        <span class="nav-icon"><i class="fas fa-rotate"></i></span>
+        <span class="nav-label">Follow-up</span>
+      </a>
+    </nav>
+
+    <div class="nav-group-label">RECORDS</div>
+    <nav class="nav">
+      <a class="nav-item" data-page="register" href="#">
+        <span class="nav-icon"><i class="fas fa-table-list"></i></span>
+        <span class="nav-label">Sales Register</span>
+      </a>
+      <a class="nav-item" data-page="flowmap" href="#">
+        <span class="nav-icon"><i class="fas fa-diagram-project"></i></span>
+        <span class="nav-label">Flow Map</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar User -->
+    <div class="sidebar-user">
+      <div class="su-avatar">VS</div>
+      <div class="su-info">
+        <div class="su-name">Vikram Shah</div>
+        <div class="su-role">Sales Director</div>
+      </div>
+      <div class="su-status" title="Online"></div>
+    </div>
+
+  </aside>
+
+  <!-- ─── MAIN ──────────────────────────────────────────────── -->
+  <div class="main" id="mainContent">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="tbar-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
+        <div class="page-heading">
+          <h1 id="pageTitle">Dashboard</h1>
+          <p id="pageCrumb">Overview · Live Pipeline</p>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <div class="global-search" id="globalSearchWrap">
+          <i class="fas fa-magnifying-glass"></i>
+          <input type="text" id="globalSearch" placeholder="Search hospitals, enquiry IDs, contacts…" autocomplete="off">
+          <kbd>⌘K</kbd>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="tbar-btn" id="themeToggle" title="Toggle theme"><i class="fas fa-circle-half-stroke"></i></button>
+        <button class="tbar-btn" id="notifBtn" title="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notif-dot" id="notifDot"></span>
+        </button>
+        <button class="btn btn-primary" id="newEnqBtn">
+          <i class="fas fa-plus"></i><span>New Enquiry</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Scrollable Content -->
+    <div class="content" id="pageContent">
+
+      <!-- ══ PAGE: DASHBOARD ══════════════════════════════════ -->
+      <section class="page active" id="page-dashboard">
+
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <!-- Funnel + Pipeline row -->
+        <div class="two-col-grid">
+          <div class="panel" id="funnelPanel">
+            <div class="panel-head">
+              <h3><i class="fas fa-filter"></i> Pipeline Funnel</h3>
+              <span class="live-badge"><i class="fas fa-circle"></i> Live</span>
+            </div>
+            <div class="funnel-wrap" id="funnelWrap"></div>
+          </div>
+          <div class="panel" id="stagePanel">
+            <div class="panel-head">
+              <h3><i class="fas fa-layer-group"></i> Stage Breakdown</h3>
+            </div>
+            <div class="stage-list" id="stageList"></div>
+          </div>
+        </div>
+
+        <!-- Recent activity -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3><i class="fas fa-clock-rotate-left"></i> Recent Activity</h3>
+            <button class="btn btn-ghost btn-sm" onclick="app.nav('enquiries')">All enquiries <i class="fas fa-arrow-right"></i></button>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" id="dashTable">
+              <thead><tr>
+                <th>Enquiry</th><th>Hospital</th><th>Source</th>
+                <th>Value</th><th>Stage</th><th>Engineer</th><th></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══ PAGE: ENQUIRIES ══════════════════════════════════ -->
+      <section class="page" id="page-enquiries">
+        <div class="page-toolbar">
+          <div class="filter-pills" id="enqFilterPills"></div>
+          <div class="toolbar-right">
+            <select class="select-sm" id="enqSortSelect">
+              <option value="date-desc">Newest First</option>
+              <option value="date-asc">Oldest First</option>
+              <option value="value-desc">Highest Value</option>
+              <option value="stage">By Stage</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="table-scroll">
+            <table class="data-table" id="enqTable">
+              <thead><tr>
+                <th>ID</th><th>Hospital</th><th>Contact</th>
+                <th>OT Type</th><th>Drawings</th><th>Stage</th>
+                <th>Value</th><th>Engineer</th><th>Date</th><th></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PAGE: QUOTATIONS ═════════════════════════════════ -->
+      <section class="page" id="page-quotations">
+        <div class="panel">
+          <div class="panel-head">
+            <h3><i class="fas fa-file-invoice-dollar"></i> All Quotations</h3>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" id="quotTable">
+              <thead><tr>
+                <th>Enquiry</th><th>Hospital</th><th>OT Type</th>
+                <th>Equipment</th><th>Civil+Elec</th><th>AMC+Misc</th>
+                <th>Total BOQ</th><th>Stage</th><th>Engineer</th><th></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PAGE: APPROVALS ══════════════════════════════════ -->
+      <section class="page" id="page-approvals">
+        <div class="approval-cards-row" id="approvalCardsRow"></div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3><i class="fas fa-hourglass-half"></i> Pending Approvals</h3>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" id="approvalTable">
+              <thead><tr>
+                <th>Enquiry</th><th>Hospital</th><th>Value</th>
+                <th>Technical</th><th>Commercial</th><th>Management</th>
+                <th>Progress</th><th></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PAGE: ORDERS WON ═════════════════════════════════ -->
+      <section class="page" id="page-orders">
+        <div class="kpi-grid" id="ordersKpi"></div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3><i class="fas fa-trophy"></i> Won Orders</h3>
+            <button class="btn btn-ghost btn-sm" id="exportWonBtn"><i class="fas fa-download"></i> Export</button>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" id="ordersTable">
+              <thead><tr>
+                <th>Enquiry</th><th>Hospital</th><th>OT Type</th>
+                <th>OTs</th><th>Order Value</th><th>Engineer</th><th>Date Won</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PAGE: FOLLOW-UP ══════════════════════════════════ -->
+      <section class="page" id="page-followup">
+        <div class="panel">
+          <div class="panel-head">
+            <h3><i class="fas fa-rotate"></i> Follow-up / Revise</h3>
+            <span class="chip chip-amber">Requires Action</span>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" id="followupTable">
+              <thead><tr>
+                <th>Enquiry</th><th>Hospital</th><th>Value</th>
+                <th>Last Contact</th><th>Notes</th><th></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PAGE: SALES REGISTER ═════════════════════════════ -->
+      <section class="page" id="page-register">
+        <div class="page-toolbar">
+          <div class="toolbar-left">
+            <input class="search-inline" type="text" id="registerSearch" placeholder="Filter register…">
+          </div>
+          <div class="toolbar-right">
+            <button class="btn btn-outline btn-sm" id="exportRegBtn"><i class="fas fa-file-csv"></i> Export CSV</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="table-scroll">
+            <table class="data-table" id="registerTable">
+              <thead><tr>
+                <th>#</th><th>Enquiry No.</th><th>Date Logged</th>
+                <th>Hospital</th><th>City</th><th>Contact</th>
+                <th>Source</th><th>OT Type</th><th>OTs</th>
+                <th>Stage</th><th>Value</th><th>Engineer</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PAGE: FLOW MAP ═══════════════════════════════════ -->
+      <section class="page" id="page-flowmap">
+        <div class="flowmap-wrap" id="flowmapWrap"></div>
+      </section>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL: WORKFLOW DETAIL
+══════════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="detailBackdrop">
+  <div class="modal" id="detailModal">
+    <div class="modal-header">
+      <div class="modal-title-block">
+        <span class="modal-enq-id" id="mEnqId"></span>
+        <h2 id="mHospital"></h2>
+        <p id="mSubline"></p>
+      </div>
+      <div class="modal-header-actions">
+        <div class="stage-pill" id="mStagePill"></div>
+        <button class="icon-btn" onclick="app.closeModal()"><i class="fas fa-xmark"></i></button>
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="modal-tabs" id="modalTabs">
+      <button class="mtab active" data-tab="overview"><i class="fas fa-circle-info"></i> Overview</button>
+      <button class="mtab" data-tab="boq"><i class="fas fa-calculator"></i> BOQ</button>
+      <button class="mtab" data-tab="approvals"><i class="fas fa-shield-check"></i> Approvals</button>
+      <button class="mtab" data-tab="timeline"><i class="fas fa-timeline"></i> Timeline</button>
+      <button class="mtab" data-tab="notes"><i class="fas fa-note-sticky"></i> Notes</button>
+    </div>
+
+    <div class="modal-body" id="modalBody">
+      <!-- Dynamically rendered per tab -->
+    </div>
+
+    <div class="modal-footer">
+      <div class="mf-left">
+        <span class="mf-saved" id="mfSaved"></span>
+      </div>
+      <div class="mf-right">
+        <button class="btn btn-ghost" onclick="app.closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="app.saveEnquiry()">
+          <i class="fas fa-floppy-disk"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL: NEW ENQUIRY
+══════════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="newEnqBackdrop">
+  <div class="modal modal-narrow" id="newEnqModal">
+    <div class="modal-header">
+      <div class="modal-title-block">
+        <span class="modal-enq-id">NEW</span>
+        <h2>Log Enquiry</h2>
+        <p>Register a new OT project enquiry into the pipeline</p>
+      </div>
+      <button class="icon-btn" onclick="app.closeNewModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="newEnqBody">
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-hospital"></i> Hospital Details</div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Hospital Name <sup>*</sup></label>
+            <input id="f_hospital" type="text" placeholder="e.g. Apollo Hospitals">
+          </div>
+          <div class="form-field">
+            <label>City <sup>*</sup></label>
+            <input id="f_city" type="text" placeholder="e.g. Mumbai">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Contact Person <sup>*</sup></label>
+            <input id="f_contact" type="text" placeholder="Dr. / Ar. / Admin name">
+          </div>
+          <div class="form-field">
+            <label>Source</label>
+            <select id="f_source">
+              <option>Doctor</option>
+              <option>Architect</option>
+              <option>Hospital Admin</option>
+              <option>Tender / Govt</option>
+              <option>Referral</option>
+              <option>Direct Enquiry</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-hospital-user"></i> Project Details</div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>OT Type</label>
+            <select id="f_ottype">
+              <option>Modular OT</option>
+              <option>Laminar Flow OT</option>
+              <option>OT Complex</option>
+              <option>ICU Setup</option>
+              <option>Cath Lab</option>
+              <option>NICU</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>No. of OTs</label>
+            <input id="f_otcount" type="number" value="1" min="1" max="20">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Assign Engineer</label>
+            <select id="f_engineer">
+              <option>Ajay Nair</option>
+              <option>Neha Gupta</option>
+              <option>Ravi Menon</option>
+              <option>Priya Das</option>
+              <option>Sameer Joshi</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Drawings Available?</label>
+            <select id="f_drawings">
+              <option value="no">⏳ No – Awaiting</option>
+              <option value="yes">✅ Yes – Received</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field form-field-full">
+            <label>Initial Notes</label>
+            <textarea id="f_notes" rows="3" placeholder="Key discussion points, client requirements…"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="mf-left"></div>
+      <div class="mf-right">
+        <button class="btn btn-ghost" onclick="app.closeNewModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="app.createEnquiry()">
+          <i class="fas fa-plus"></i> Create Enquiry
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Scripts -->
+<script src="script.js"></script>
+</body>
+</html>
